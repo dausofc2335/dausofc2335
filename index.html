@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <title>Chat to Telegram Bot</title>
+  <style>
+    /* Reset dasar untuk menghindari perbedaan antar browser */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+      font-family: Arial, sans-serif;
+    }
+
+    .chat-container {
+      width: 90%; /* Responsif dengan lebar layar */
+      max-width: 400px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .input-container {
+      display: flex;
+      padding: 10px;
+      background-color: #fafafa;
+      border-top: 1px solid #ddd;
+    }
+
+    .input-field {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+      font-size: 16px;
+    }
+
+    .send-button {
+      margin-left: 10px;
+      padding: 12px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    .send-button:active {
+      background-color: #45a049;
+    }
+
+    /* Media Query untuk layar kecil (ponsel) */
+    @media (max-width: 600px) {
+      .input-field {
+        font-size: 14px;
+      }
+
+      .send-button {
+        font-size: 14px;
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="chat-container">
+    <div class="input-container">
+      <input type="text" class="input-field" id="inputField" placeholder="Type a message..." />
+      <button class="send-button" id="sendButton">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const inputField = document.getElementById('inputField');
+    const sendButton = document.getElementById('sendButton');
+
+    const BOT_TOKEN = '7419758283:AAGrCUalgX9cw27XOSm3YMElQZ211nIXXAs';  // Ganti dengan token bot kamu
+    const CHAT_ID = '7614483373';      // Ganti dengan User ID Telegram kamu
+
+    // Fungsi untuk mengirim pesan ke bot Telegram
+    async function sendMessageToTelegram(text) {
+      const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+      const data = {
+        chat_id: CHAT_ID,
+        text: text
+      };
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          console.log('Pesan berhasil dikirim.');
+          clearInputField(); // Bersihkan input setelah pesan terkirim
+        } else {
+          alert('Gagal mengirim pesan.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat mengirim pesan.');
+      }
+    }
+
+    // Fungsi untuk membersihkan kolom input
+    function clearInputField() {
+      inputField.value = '';
+      inputField.focus(); // Fokus kembali ke input field agar siap untuk pesan berikutnya
+    }
+
+    // Event: Klik tombol send
+    sendButton.addEventListener('click', () => {
+      const text = inputField.value.trim();
+      if (text) {
+        sendMessageToTelegram(text); // Kirim pesan ke bot
+      } else {
+        alert('Ketik pesan terlebih dahulu!');
+      }
+    });
+
+    // Event: Tekan "Enter" di keyboard
+    inputField.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        sendButton.click();
+      }
+    });
+  </script>
+
+</body>
+  </html>
